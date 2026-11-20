@@ -79,9 +79,9 @@ def main():
 
     # 1. Fuente de datos
     caja(ax, X0, 128, ANCHO, 13, "1. Fuente de datos", [
-        "Credit Card Dataset for Clustering (Bhasin, 2018) · Kaggle · licencia CC0",
-        "Archivo CC GENERAL.csv: 8.950 titulares × 18 variables, 6 meses de uso, sin etiquetas",
-    ], DATOS, "pandas · read_csv")
+        "Credit Card Dataset for Clustering (Bhasin, 2018), Kaggle, licencia CC0",
+        "Archivo CC GENERAL.csv con 8.950 titulares y 18 variables, 6 meses de uso, sin etiquetas",
+    ], DATOS, "pandas, read_csv")
     fase(ax, 134.5, "Fase 2")
     flecha(ax, MEDIO, 128, MEDIO, 123.5, "DataFrame original (8.950 × 18)")
 
@@ -90,24 +90,24 @@ def main():
         "• Estadísticas descriptivas y asimetría  • Valores faltantes (313 en MINIMUM_PAYMENTS, 1 en CREDIT_LIMIT)",
         "• Duplicados (0)  • Atípicos con la regla IQR  • Histogramas y diagramas de caja",
         "• Matriz de correlación y dispersión (PURCHASES ~ ONEOFF_PURCHASES, r = 0,92)",
-        "Hallazgo: los 240 clientes con PAYMENTS = 0 son los que no tienen MINIMUM_PAYMENTS",
-    ], DATOS, "pandas · matplotlib · seaborn")
+        "Hallazgo, los 240 clientes con PAYMENTS = 0 son los que no tienen MINIMUM_PAYMENTS",
+    ], DATOS, "pandas, matplotlib, seaborn")
     fase(ax, 114, "Fase 3")
     flecha(ax, MEDIO, 105, MEDIO, 100.5, "Decisiones de limpieza y transformación")
 
     # 3. Preprocesamiento
     caja(ax, X0, 77, ANCHO, 23.5, "3. Preprocesamiento", [
         "1) Eliminar el identificador CUST_ID",
-        "2) Faltantes: MINIMUM_PAYMENTS = 0 si PAYMENTS = 0; resto con la mediana; quitar 1 fila sin CREDIT_LIMIT",
-        "3) Eliminar duplicados  ·  4) Sin variables categóricas (no requiere codificación)",
+        "2) Faltantes, MINIMUM_PAYMENTS = 0 si PAYMENTS = 0, resto con la mediana, se quita 1 fila sin CREDIT_LIMIT",
+        "3) Eliminar duplicados.   4) Sin variables categóricas, no requiere codificación",
         "5) Transformación log(1 + x) en montos y conteos para reducir la asimetría",
-        "6) Selección de variables: quitar las casi constantes (TENURE) y las redundantes (|r| ≥ 0,80)",
+        "6) Selección de variables, se quitan las casi constantes (TENURE) y las redundantes (|r| ≥ 0,80)",
         "7) Estandarización con StandardScaler (media 0, desviación 1)",
-    ], PREPARACION, "pandas · numpy · scikit-learn")
+    ], PREPARACION, "pandas, numpy, scikit-learn")
     fase(ax, 89, "Fase 4")
 
     # Bifurcación hacia los dos algoritmos
-    ax.text(MEDIO, 74.6, "Dataset preparado: 8.949 clientes × 13 variables (mismas variables para ambos algoritmos)",
+    ax.text(MEDIO, 74.6, "Dataset preparado con 8.949 clientes y 13 variables, las mismas para ambos algoritmos",
             ha="center", va="center", fontsize=8.5, color=GRIS, style="italic",
             bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="#C9D1DA"))
     ANCHO_MEDIO = 41.5
@@ -120,7 +120,7 @@ def main():
         "• Probar k = 2 … 10 (n_init = 10, semilla 42)",
         "• Elegir k con el método del codo",
         "   y el coeficiente Silhouette",
-        "• Modelo final: k = 5",
+        "• Modelo final con k = 5",
     ], KMEANS, "sklearn.cluster.KMeans")
     # 4b. DBSCAN
     caja(ax, X_DB, 51, ANCHO_MEDIO, 19, "4b. DBSCAN (densidad)", [
@@ -128,8 +128,8 @@ def main():
         "• eps desde la gráfica de distancia",
         "   al k-ésimo vecino",
         "• Búsqueda de eps y min_samples",
-        "• Modelo final: eps = 2,34; min_samples = 39",
-    ], DBSCAN, "DBSCAN · NearestNeighbors")
+        "• Modelo final con eps = 2,34 y min_samples = 39",
+    ], DBSCAN, "DBSCAN, NearestNeighbors")
     fase(ax, 60.5, "Fase 5")
 
     flecha(ax, X_KM + ANCHO_MEDIO / 2, 51, MEDIO - 8, 46.5, "Etiquetas de grupo", lado="izquierda")
@@ -137,26 +137,26 @@ def main():
 
     # 5. Evaluación
     caja(ax, X0, 31, ANCHO, 15.5, "5. Evaluación del desempeño", [
-        "• Métricas internas: Silhouette, Davies-Bouldin, Calinski-Harabasz",
+        "• Métricas internas Silhouette, Davies-Bouldin y Calinski-Harabasz",
         "• Porcentaje de ruido, tamaño de cada grupo y tiempo de ejecución",
-        "• Gráficas: codo/Silhouette, k-distancia, grupos en 2D con PCA, tamaños y comparación de métricas",
-    ], EVALUACION, "sklearn.metrics · PCA · matplotlib")
+        "• Gráficas de codo y Silhouette, k-distancia, grupos en 2D con PCA, tamaños y comparación de métricas",
+    ], EVALUACION, "sklearn.metrics, PCA, matplotlib")
     fase(ax, 38.75, "Fase 6")
     flecha(ax, MEDIO, 31, MEDIO, 27.5, "Tabla comparativa de métricas")
 
     # 6. Comparación y selección
     caja(ax, X0, 17, ANCHO, 10.5, "6. Comparación y selección del algoritmo", [
-        "K-Means: 5 grupos equilibrados (13 % – 26 %), mejor Calinski-Harabasz y más rápido  →  algoritmo elegido",
-        "DBSCAN: un grupo con el 97 % de los clientes; útil como complemento para detectar no pagadores y atípicos",
+        "K-Means da 5 grupos equilibrados (entre 13 % y 26 %), mejor Calinski-Harabasz y es más rápido, por eso es el elegido",
+        "DBSCAN deja un grupo con el 97 % de los clientes, es útil como complemento para detectar no pagadores y atípicos",
     ], RESULTADO)
     fase(ax, 22.25, "Fase 7")
     flecha(ax, MEDIO, 17, MEDIO, 13.5, "Perfiles promedio por grupo")
 
     # 7. Interpretación y uso
     caja(ax, X0, 1, ANCHO, 12.5, "7. Interpretación y uso de los resultados", [
-        "Segmentos: compradores frecuentes de alto gasto · compradores a cuotas · revolventes de alto saldo ·",
-        "usuarios de avances en efectivo · inactivos   →   campañas por segmento, ajuste de cupos y gestión de riesgo",
-    ], RESULTADO, "cc_con_grupos.csv · perfiles por grupo")
+        "Segmentos de compradores frecuentes de alto gasto, compradores a cuotas, revolventes de alto saldo,",
+        "usuarios de avances en efectivo e inactivos, útiles para campañas por segmento, ajuste de cupos y gestión de riesgo",
+    ], RESULTADO, "cc_con_grupos.csv, perfiles por grupo")
     fase(ax, 7.25, "Fase 7")
 
     SALIDA.mkdir(parents=True, exist_ok=True)
