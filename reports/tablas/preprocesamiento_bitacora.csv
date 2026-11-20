@@ -1,0 +1,7 @@
+﻿Paso,Acción,Registros resultantes
+Eliminar identificador,Se elimina CUST_ID,8950
+Faltantes en CREDIT_LIMIT,Se eliminan 1 filas,8949
+Faltantes en MINIMUM_PAYMENTS (sin pagos),240 clientes con PAYMENTS = 0: se imputa 0,8949
+Faltantes en MINIMUM_PAYMENTS (resto),Se imputan 73 valores con la mediana (312.45),8949
+Duplicados,Se eliminan 0 filas,8949
+Variables categóricas,No hay; no se requiere codificación,8949

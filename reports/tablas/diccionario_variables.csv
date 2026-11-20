@@ -1,0 +1,19 @@
+﻿Variable,Tipo,Descripción
+CUST_ID,str,Identificador del titular (no se usa en el modelo)
+BALANCE,float64,Saldo pendiente en la cuenta
+BALANCE_FREQUENCY,float64,Frecuencia con que se actualiza el saldo (0 a 1)
+PURCHASES,float64,Monto total de compras
+ONEOFF_PURCHASES,float64,Monto de compras hechas en un solo pago
+INSTALLMENTS_PURCHASES,float64,Monto de compras hechas a cuotas
+CASH_ADVANCE,float64,Monto de avances en efectivo
+PURCHASES_FREQUENCY,float64,Frecuencia de compras (0 a 1)
+ONEOFF_PURCHASES_FREQUENCY,float64,Frecuencia de compras en un solo pago (0 a 1)
+PURCHASES_INSTALLMENTS_FREQUENCY,float64,Frecuencia de compras a cuotas (0 a 1)
+CASH_ADVANCE_FREQUENCY,float64,Frecuencia de avances en efectivo (0 a 1)
+CASH_ADVANCE_TRX,int64,Número de transacciones de avance en efectivo
+PURCHASES_TRX,int64,Número de transacciones de compra
+CREDIT_LIMIT,float64,Cupo de la tarjeta
+PAYMENTS,float64,Monto total pagado
+MINIMUM_PAYMENTS,float64,Monto de pagos mínimos realizados
+PRC_FULL_PAYMENT,float64,Porcentaje de meses en que se pagó el total (0 a 1)
+TENURE,int64,Antigüedad del servicio de tarjeta (meses)

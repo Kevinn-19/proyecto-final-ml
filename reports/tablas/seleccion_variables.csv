@@ -1,0 +1,18 @@
+﻿Variable,Decisión,Motivo
+BALANCE,Seleccionada,
+PURCHASES,Seleccionada,
+CASH_ADVANCE,Seleccionada,
+CREDIT_LIMIT,Seleccionada,
+PAYMENTS,Seleccionada,
+MINIMUM_PAYMENTS,Seleccionada,
+PRC_FULL_PAYMENT,Seleccionada,
+PURCHASES_FREQUENCY,Seleccionada,
+CASH_ADVANCE_FREQUENCY,Seleccionada,
+BALANCE_FREQUENCY,Seleccionada,
+ONEOFF_PURCHASES,Seleccionada,
+INSTALLMENTS_PURCHASES,Seleccionada,
+ONEOFF_PURCHASES_FREQUENCY,Seleccionada,
+PURCHASES_INSTALLMENTS_FREQUENCY,Descartada,Redundante con PURCHASES_FREQUENCY (r = 0.86)
+CASH_ADVANCE_TRX,Descartada,Redundante con CASH_ADVANCE (r = 0.90)
+PURCHASES_TRX,Descartada,Redundante con PURCHASES (r = 0.89)
+TENURE,Descartada,Casi constante: 85% de los clientes tiene el mismo valor
