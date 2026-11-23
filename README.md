@@ -1,25 +1,39 @@
-# Segmentación de clientes de tarjeta de crédito con Machine Learning no supervisado
+# Segmentación de clientes de tarjeta de crédito con machine learning no supervisado
 
-Trabajo final del curso **Introducción a Machine Learning**.
+Trabajo final de Introducción a Machine Learning, Especialización en Inteligencia Artificial, Universidad de Cundinamarca. Kevin Esteban Chiquillo Díaz, noviembre de 2026.
 
-Se aplican dos algoritmos de clustering, **K-Means** y **DBSCAN**, sobre el comportamiento de uso de tarjetas de crédito de unos 9.000 clientes. El objetivo es descubrir perfiles de clientes, evaluar la calidad de los grupos con métricas cuantitativas y elegir el algoritmo más apropiado.
+En este proyecto busco perfiles de clientes de tarjeta de crédito a partir de cómo usan la tarjeta. Uso dos algoritmos de agrupamiento, K-Means y DBSCAN, sobre unos 9.000 clientes, comparo la calidad de los grupos con varias métricas y escojo el algoritmo que mejor funciona para el problema.
 
-**Pregunta de investigación:** ¿Qué perfiles de comportamiento en el uso de tarjetas de crédito existen entre los titulares del dataset, y cuál de los algoritmos K-Means y DBSCAN los identifica con mayor calidad de agrupamiento?
+La pregunta que quiero responder es esta.
+
+> ¿Qué perfiles de comportamiento en el uso de tarjetas de crédito existen entre los titulares del dataset, y cuál de los algoritmos K-Means y DBSCAN los identifica con mayor calidad de agrupamiento?
+
+## Resultado principal
+
+K-Means con cinco grupos fue el algoritmo más apropiado. Los perfiles que encontré son estos.
+
+- Compradores frecuentes de alto gasto: 1.804 clientes (20 %).
+- Compradores a cuotas: 2.317 clientes (26 %).
+- Revolventes de alto saldo: 1.498 clientes (17 %).
+- Usuarios de avances en efectivo: 2.174 clientes (24 %).
+- Inactivos o de bajo uso: 1.156 clientes (13 %).
+
+DBSCAN dejó a casi todos los clientes en un mismo grupo, pero me sirvió para ubicar a 141 clientes que no hicieron pagos en seis meses y a un 1,6 % de casos atípicos.
 
 ## Estructura del proyecto
 
 ```
 ├── data/
-│   ├── raw/               # Dataset original: CC GENERAL.csv
-│   └── processed/         # Datos limpios, estandarizados y con grupos (los genera el notebook)
+│   ├── raw/               # Dataset original, CC GENERAL.csv
+│   └── processed/         # Datos limpios, estandarizados y con grupos
 ├── notebooks/
 │   └── segmentacion_clientes_tarjetas.ipynb   # Las 7 fases del trabajo
 ├── scripts/
-│   ├── segmentacion_clientes_tarjetas.py      # El mismo análisis del notebook, como script
+│   ├── segmentacion_clientes_tarjetas.py      # El mismo análisis como script
 │   └── diagrama_bloques.py                    # Genera el diagrama de bloques
 ├── reports/
-│   ├── figures/           # Gráficas para el informe (las genera el notebook o el script)
-│   └── tablas/            # Tablas en CSV para el informe (las genera el notebook o el script)
+│   ├── figures/           # Gráficas que usa el informe
+│   └── tablas/            # Tablas en CSV que usa el informe
 ├── docs/                  # Informe final en Word y PDF
 ├── requirements.txt
 └── README.md
@@ -27,15 +41,19 @@ Se aplican dos algoritmos de clustering, **K-Means** y **DBSCAN**, sobre el comp
 
 ## Dataset
 
-**Credit Card Dataset for Clustering**: Bhasin, A. (2018). Kaggle.
-https://www.kaggle.com/datasets/arjunbhasin2013/ccdata
+Uso el Credit Card Dataset for Clustering, que Arjun Bhasin publicó en [Kaggle](https://www.kaggle.com/datasets/arjunbhasin2013/ccdata) en 2018 con licencia de dominio público. El archivo `CC GENERAL.csv` ya viene incluido en `data/raw`, así que no hace falta descargarlo. Si se quiere bajar de nuevo, hay que iniciar sesión en Kaggle, descargarlo, descomprimirlo y dejar el CSV en esa misma carpeta.
 
-1. Inicia sesión en Kaggle y descarga el dataset.
-2. Descomprime y guarda el archivo `CC GENERAL.csv` en `data/raw/`.
+## Cómo ejecutarlo
 
-## Ejecutar en local
+### En Google Colab
 
-Requiere Python 3.10 o superior.
+La forma más fácil es abrir el notebook directamente con este [enlace a Colab](https://colab.research.google.com/github/Kevinn-19/proyecto-final-ml/blob/main/notebooks/segmentacion_clientes_tarjetas.ipynb). El notebook clona el repositorio solo y usa el dataset que viene incluido. Colab ya trae todas las librerías que se necesitan.
+
+Otra opción es subir el `.ipynb` a Colab a mano. En ese caso, si no encuentra el dataset, el notebook pide subir `CC GENERAL.csv`.
+
+### En local
+
+Se necesita Python 3.10 o superior.
 
 ```powershell
 python -m venv .venv
@@ -44,25 +62,15 @@ pip install -r requirements.txt
 jupyter notebook notebooks/segmentacion_clientes_tarjetas.ipynb
 ```
 
-El notebook también se puede abrir con VS Code usando la extensión de Jupyter.
+También se puede abrir con VS Code usando la extensión de Jupyter.
 
-**Como script de Python.** El mismo análisis está en `scripts/segmentacion_clientes_tarjetas.py`. Ejecuta las 7 fases, imprime las tablas en la consola y guarda las gráficas y tablas en `reports/`. Tarda unos 3 minutos.
+### Como script de Python
+
+El mismo análisis está en `scripts/segmentacion_clientes_tarjetas.py`. Corre las siete fases, muestra las tablas en la consola y guarda las gráficas y tablas en `reports`. Tarda unos tres minutos.
 
 ```powershell
 python scripts/segmentacion_clientes_tarjetas.py
 ```
-
-## Ejecutar en Google Colab
-
-**Opción A: desde GitHub (recomendada)**
-1. En Colab: *Archivo → Abrir cuaderno → GitHub* y pega la URL del repositorio.
-2. En la celda de rutas, escribe la URL del repositorio en `REPO_URL`. El notebook clona el repo y usa el CSV de `data/raw/`.
-
-**Opción B: subiendo el notebook**
-1. Sube el `.ipynb` a Colab.
-2. Al ejecutar, si no encuentra el dataset, el notebook pide subir `CC GENERAL.csv`.
-
-Colab ya trae instaladas todas las librerías necesarias.
 
 ## Fases del trabajo
 
@@ -70,19 +78,19 @@ Colab ya trae instaladas todas las librerías necesarias.
 |---|---|---|
 | 1 | Descripción del problema y pregunta de investigación | Texto en el notebook |
 | 2 | Fuente de datos y diccionario de variables | `reports/tablas/diccionario_variables.csv` |
-| 3 | Análisis exploratorio (EDA) | Diagramas de caja, histogramas, correlación y dispersión |
+| 3 | Análisis exploratorio | Diagramas de caja, histogramas, correlación y dispersión |
 | 4 | Preprocesamiento | `data/processed/cc_preparado_estandarizado.csv` |
 | 5 | K-Means y DBSCAN | Búsqueda de k, de eps y de min_samples |
-| 6 | Evaluación | Silhouette, Davies-Bouldin, Calinski-Harabasz, % de ruido, tamaños y tiempo |
+| 6 | Evaluación | Silhouette, Davies-Bouldin, Calinski-Harabasz, porcentaje de ruido, tamaños y tiempo |
 | 7 | Interpretación y selección del algoritmo | Perfiles de los grupos y `data/processed/cc_con_grupos.csv` |
 
 ## Herramientas
 
-| Herramienta | Uso |
+| Herramienta | Para qué la usé |
 |---|---|
 | Python 3 | Lenguaje del proyecto |
-| Jupyter / Google Colab | Ejecución del notebook y trabajo colaborativo |
-| pandas, numpy | Carga, limpieza y transformación de los datos |
-| matplotlib, seaborn | Gráficas |
-| scikit-learn | `StandardScaler`, `PCA`, `KMeans`, `DBSCAN`, `NearestNeighbors` y métricas |
-| Git / GitHub | Control de versiones del equipo |
+| Jupyter y Google Colab | Ejecutar el notebook |
+| pandas y NumPy | Cargar, limpiar y transformar los datos |
+| Matplotlib y seaborn | Hacer las gráficas |
+| scikit-learn | `StandardScaler`, `PCA`, `KMeans`, `DBSCAN`, `NearestNeighbors` y las métricas |
+| Git y GitHub | Guardar el historial de cambios |
