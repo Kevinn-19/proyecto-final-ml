@@ -14,10 +14,13 @@ Se aplican dos algoritmos de clustering, **K-Means** y **DBSCAN**, sobre el comp
 │   └── processed/         # Datos limpios, estandarizados y con grupos (los genera el notebook)
 ├── notebooks/
 │   └── segmentacion_clientes_tarjetas.ipynb   # Las 7 fases del trabajo
+├── scripts/
+│   ├── segmentacion_clientes_tarjetas.py      # El mismo análisis del notebook, como script
+│   └── diagrama_bloques.py                    # Genera el diagrama de bloques
 ├── reports/
-│   ├── figures/           # Gráficas para el informe (las genera el notebook)
-│   └── tablas/            # Tablas en CSV para el informe (las genera el notebook)
-├── docs/                  # Informe final (PDF) y presentación
+│   ├── figures/           # Gráficas para el informe (las genera el notebook o el script)
+│   └── tablas/            # Tablas en CSV para el informe (las genera el notebook o el script)
+├── docs/                  # Informe final en Word y PDF
 ├── requirements.txt
 └── README.md
 ```
@@ -42,6 +45,12 @@ jupyter notebook notebooks/segmentacion_clientes_tarjetas.ipynb
 ```
 
 El notebook también se puede abrir con VS Code usando la extensión de Jupyter.
+
+**Como script de Python.** El mismo análisis está en `scripts/segmentacion_clientes_tarjetas.py`. Ejecuta las 7 fases, imprime las tablas en la consola y guarda las gráficas y tablas en `reports/`. Tarda unos 3 minutos.
+
+```powershell
+python scripts/segmentacion_clientes_tarjetas.py
+```
 
 ## Ejecutar en Google Colab
 
