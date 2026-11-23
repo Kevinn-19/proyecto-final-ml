@@ -47,7 +47,9 @@ Uso el Credit Card Dataset for Clustering, que Arjun Bhasin publicó en [Kaggle]
 
 ### En Google Colab
 
-La forma más fácil es abrir el notebook directamente con este [enlace a Colab](https://colab.research.google.com/github/Kevinn-19/proyecto-final-ml/blob/main/notebooks/segmentacion_clientes_tarjetas.ipynb). El notebook clona el repositorio solo y usa el dataset que viene incluido. Colab ya trae todas las librerías que se necesitan.
+El notebook está publicado en Google Colab en este [enlace](https://colab.research.google.com/drive/1GNn4XEqF_Rpbz8DHA4rwplE_EbccrqVc). Al ejecutarlo clona el repositorio solo y usa el dataset que viene incluido. Colab ya trae todas las librerías que se necesitan.
+
+También se puede abrir la versión que está en GitHub con este [otro enlace](https://colab.research.google.com/github/Kevinn-19/proyecto-final-ml/blob/main/notebooks/segmentacion_clientes_tarjetas.ipynb).
 
 Otra opción es subir el `.ipynb` a Colab a mano. En ese caso, si no encuentra el dataset, el notebook pide subir `CC GENERAL.csv`.
 
