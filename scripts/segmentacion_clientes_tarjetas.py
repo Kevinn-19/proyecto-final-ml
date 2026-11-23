@@ -13,7 +13,7 @@ Requiere el archivo data/raw/CC GENERAL.csv y las librerías de requirements.txt
 
 
 # ============================================================================
-# Segmentación de clientes de tarjeta de crédito con Machine Learning no supervisado
+# Segmentación de clientes de tarjeta de crédito con machine learning no supervisado
 # ============================================================================
 
 
@@ -21,7 +21,6 @@ Requiere el archivo data/raw/CC GENERAL.csv y las librerías de requirements.txt
 # Fase 0. Configuración del entorno
 # ============================================================================
 
-# Librerías
 import os
 import sys
 import time
@@ -32,7 +31,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use("Agg")  # las gráficas se guardan, no se abren ventanas
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -48,11 +47,9 @@ from sklearn.metrics import (
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
-# Semilla para que los resultados se puedan reproducir
 SEMILLA = 42
 np.random.seed(SEMILLA)
 
-# Estilo de las gráficas
 sns.set_theme(style="whitegrid")
 plt.rcParams["figure.dpi"] = 110
 
@@ -65,14 +62,12 @@ print("Ejecutando en Google Colab" if EN_COLAB else "Ejecutando en local")
 
 # --- Rutas del proyecto ---
 
-# URL del repositorio en GitHub (solo se usa en Colab). Ejemplo: "https://github.com/usuario/proyecto-final-ml.git"
 REPO_URL = "https://github.com/Kevinn-19/proyecto-final-ml.git"
 
 NOMBRE_ARCHIVO = "CC GENERAL.csv"
 
 
 def encontrar_raiz():
-    """Devuelve la carpeta raíz del proyecto."""
     if EN_COLAB and REPO_URL:
         nombre_repo = REPO_URL.rstrip("/").split("/")[-1].removesuffix(".git")
         destino = Path("/content") / nombre_repo
@@ -116,12 +111,10 @@ print("Dataset:", RUTA_DATOS)
 
 
 def guardar_figura(nombre):
-    """Guarda la figura actual en reports/figures para usarla en el informe."""
     plt.savefig(DIR_FIGURAS / f"{nombre}.png", bbox_inches="tight")
 
 
 def guardar_tabla(tabla, nombre):
-    """Guarda una tabla en reports/tablas para usarla en el informe."""
     tabla.to_csv(DIR_TABLAS / f"{nombre}.csv", encoding="utf-8-sig")
 
 
@@ -174,7 +167,7 @@ print(tabla_diccionario)
 
 
 # ============================================================================
-# Fase 3. Análisis exploratorio de datos (EDA)
+# Fase 3. Análisis exploratorio de datos
 # ============================================================================
 
 COLUMNA_ID = "CUST_ID"
@@ -206,7 +199,6 @@ print(f"IDs de cliente repetidos: {dup_id}")
 print(f"Filas iguales ignorando el ID: {dup_sin_id}")
 print()
 
-# ¿Los faltantes de MINIMUM_PAYMENTS tienen alguna explicación?
 falta_min = df["MINIMUM_PAYMENTS"].isna()
 print(f"Clientes sin MINIMUM_PAYMENTS: {falta_min.sum()}")
 print(f"  de ellos con PAYMENTS = 0: {(falta_min & (df['PAYMENTS'] == 0)).sum()}")
@@ -247,7 +239,7 @@ guardar_figura("eda_01_diagramas_caja")
 plt.close()
 
 
-# --- 3.4 Distribución de las variables (histogramas) ---
+# --- 3.4 Distribución de las variables ---
 
 fig, ejes = plt.subplots(n_filas, n_cols, figsize=(16, 3.2 * n_filas))
 for eje, col in zip(ejes.flat, numericas):
@@ -263,7 +255,7 @@ guardar_figura("eda_02_histogramas")
 plt.close()
 
 
-# --- 3.5 Relaciones entre variables (matriz de correlación) ---
+# --- 3.5 Relaciones entre variables ---
 
 correlacion = df[numericas].corr()
 
@@ -276,7 +268,6 @@ plt.tight_layout()
 guardar_figura("eda_03_matriz_correlacion")
 plt.close()
 
-# Pares de variables con correlación alta
 pares = (
     correlacion.where(np.triu(np.ones(correlacion.shape, dtype=bool), k=1))
     .stack()
@@ -290,7 +281,7 @@ print("Pares con |r| >= 0.7:")
 print(pares_altos)
 
 
-# --- 3.6 Diagramas de dispersión más relevantes ---
+# --- 3.6 Diagramas de dispersión ---
 
 PARES_DISPERSION = [
     ("PURCHASES", "PAYMENTS"),
@@ -311,9 +302,7 @@ guardar_figura("eda_04_dispersion")
 plt.close()
 
 
-# --- Interpretación del EDA ---
-
-# El análisis escrito de esta parte está en el notebook y en el informe.
+# --- Lo que encontré en el análisis exploratorio ---
 
 
 # ============================================================================
@@ -321,46 +310,37 @@ plt.close()
 # ============================================================================
 
 datos = df.copy()
-registro = []  # bitácora de lo que se hace en cada paso
+registro = []
 
-# 4.1 Eliminar el identificador
 datos = datos.drop(columns=[COLUMNA_ID], errors="ignore")
 registro.append(("Eliminar identificador", f"Se elimina {COLUMNA_ID}", len(datos)))
 
-# 4.2 Valores faltantes
-# CREDIT_LIMIT: muy pocos faltantes -> se elimina la fila
 n_antes = len(datos)
 datos = datos.dropna(subset=["CREDIT_LIMIT"])
 registro.append(("Faltantes en CREDIT_LIMIT", f"Se eliminan {n_antes - len(datos)} filas", len(datos)))
 
-# MINIMUM_PAYMENTS: en el EDA se ve que los clientes con PAYMENTS = 0 son los que no tienen
-# MINIMUM_PAYMENTS. Si el cliente no pagó nada, su pago mínimo realizado es 0 (no un valor típico).
 faltante_min = datos["MINIMUM_PAYMENTS"].isna()
 sin_pagos = faltante_min & (datos["PAYMENTS"] == 0)
 datos.loc[sin_pagos, "MINIMUM_PAYMENTS"] = 0
 registro.append(("Faltantes en MINIMUM_PAYMENTS (sin pagos)",
                  f"{sin_pagos.sum()} clientes con PAYMENTS = 0: se imputa 0", len(datos)))
 
-# El resto de faltantes se imputa con la mediana (robusta ante atípicos)
 resto = datos["MINIMUM_PAYMENTS"].isna()
 mediana_pagos_min = datos.loc[~faltante_min, "MINIMUM_PAYMENTS"].median()
 datos.loc[resto, "MINIMUM_PAYMENTS"] = mediana_pagos_min
 registro.append(("Faltantes en MINIMUM_PAYMENTS (resto)",
                  f"Se imputan {resto.sum()} valores con la mediana ({mediana_pagos_min:,.2f})", len(datos)))
 
-# Cualquier otro faltante restante se imputa con la mediana de su columna
 otros = datos.columns[datos.isna().any()].tolist()
 for col in otros:
     datos[col] = datos[col].fillna(datos[col].median())
 if otros:
     registro.append(("Otros faltantes", f"Imputados con la mediana: {otros}", len(datos)))
 
-# 4.3 Duplicados
 n_antes = len(datos)
 datos = datos.drop_duplicates()
 registro.append(("Duplicados", f"Se eliminan {n_antes - len(datos)} filas", len(datos)))
 
-# 4.4 Variables categóricas
 categoricas = datos.select_dtypes(exclude="number").columns.tolist()
 registro.append(("Variables categóricas",
                  "No hay; no se requiere codificación" if not categoricas else f"Codificar: {categoricas}",
@@ -397,7 +377,6 @@ print(comparacion_asimetria)
 UMBRAL_CONSTANTE = 0.80
 UMBRAL_CORRELACION = 0.80
 
-# Orden de prioridad: primero las variables más generales del comportamiento del cliente
 PRIORIDAD = [
     "BALANCE", "PURCHASES", "CASH_ADVANCE", "CREDIT_LIMIT", "PAYMENTS",
     "MINIMUM_PAYMENTS", "PRC_FULL_PAYMENT", "PURCHASES_FREQUENCY",
@@ -439,7 +418,6 @@ X = pd.DataFrame(
     columns=seleccionadas,
 )
 
-# Entregable de la Fase 4: dataset preparado
 datos.to_csv(DIR_PROCESADOS / "cc_limpio.csv", index=False)
 X.to_csv(DIR_PROCESADOS / "cc_preparado_estandarizado.csv", index=False)
 
@@ -448,7 +426,7 @@ print("Guardado en data/processed/cc_preparado_estandarizado.csv")
 print(X.describe().T[["mean", "std", "min", "max"]])
 
 
-# --- 4.8 Reducción a 2 dimensiones con PCA (solo para visualizar) ---
+# --- 4.8 PCA para visualizar ---
 
 pca = PCA(n_components=2, random_state=SEMILLA)
 X_2d = pca.fit_transform(X)
@@ -461,11 +439,6 @@ print(f"Varianza explicada por las 2 primeras componentes: {varianza_2d:.1%}")
 # ============================================================================
 
 def punto_de_codo(x, y):
-    """Índice del punto de máxima curvatura (método de la distancia a la recta).
-
-    Se traza una recta entre el primer y el último punto de la curva y se elige
-    el punto que queda más lejos de esa recta.
-    """
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
     x_n = (x - x.min()) / (x.max() - x.min())
@@ -480,7 +453,6 @@ def punto_de_codo(x, y):
 
 
 def metricas_clustering(X, etiquetas):
-    """Calcula las métricas internas. En DBSCAN se excluye el ruido (etiqueta -1)."""
     etiquetas = np.asarray(etiquetas)
     mascara = etiquetas != -1
     n_grupos = len(set(etiquetas[mascara]))
@@ -500,7 +472,7 @@ def metricas_clustering(X, etiquetas):
     return resultado
 
 
-# --- 5.1 K-Means, elección del número de grupos (k) ---
+# --- 5.1 K-Means, elección del número de grupos ---
 
 RANGO_K = range(2, 11)
 resultados_k = []
@@ -546,7 +518,7 @@ plt.close()
 
 # --- Elección final de k ---
 
-K_ELEGIDO = k_codo  # cambiar aquí si el equipo justifica otro valor
+K_ELEGIDO = k_codo
 
 inicio = time.perf_counter()
 kmeans = KMeans(n_clusters=K_ELEGIDO, n_init=10, random_state=SEMILLA)
@@ -586,7 +558,7 @@ print(f"eps sugerido por el codo: {eps_codo:.3f}")
 
 # --- Búsqueda de parámetros de DBSCAN ---
 
-MAX_RUIDO = 15  # porcentaje máximo de ruido aceptado
+MAX_RUIDO = 15
 
 valores_eps = np.round(eps_codo * np.arange(0.6, 1.45, 0.1), 3)
 valores_min_samples = sorted({max(3, MIN_SAMPLES_BASE // 2), MIN_SAMPLES_BASE, int(MIN_SAMPLES_BASE * 1.5)})
@@ -655,7 +627,7 @@ guardar_tabla(comparacion, "comparacion_algoritmos")
 print(comparacion)
 
 
-# --- Gráfica, comparación de métricas ---
+# --- Comparación de las métricas ---
 
 METRICAS = [("Silhouette", "más alto es mejor"),
             ("Davies-Bouldin", "más bajo es mejor"),
@@ -674,7 +646,7 @@ guardar_figura("eval_01_comparacion_metricas")
 plt.close()
 
 
-# --- Gráfica, grupos vistos en 2D (PCA) ---
+# --- Los grupos vistos en dos dimensiones ---
 
 fig, ejes = plt.subplots(1, 2, figsize=(15, 6))
 
@@ -698,7 +670,7 @@ guardar_figura("eval_02_grupos_pca")
 plt.close()
 
 
-# --- Gráfica, tamaño de cada grupo ---
+# --- Tamaño de cada grupo ---
 
 fig, ejes = plt.subplots(1, 2, figsize=(14, 4.5))
 
@@ -758,7 +730,6 @@ def mapa_perfiles(etiquetas, nombre, archivo):
 
 
 def describir_grupos(z, n=3):
-    """Lista las variables en las que cada grupo está más por encima y más por debajo del promedio."""
     for grupo, fila in z.iterrows():
         altas = fila.sort_values(ascending=False).head(n)
         bajas = fila.sort_values().head(n)
@@ -787,7 +758,7 @@ else:
     print("DBSCAN no formó grupos (todo es ruido).")
 
 
-# --- 7.3 ¿Quiénes son los clientes que DBSCAN marca como ruido? ---
+# --- 7.3 Los clientes que DBSCAN marca como ruido ---
 
 es_ruido = etiquetas_db == -1
 if es_ruido.any():
@@ -817,8 +788,6 @@ for carpeta in [DIR_PROCESADOS, DIR_FIGURAS, DIR_TABLAS]:
 
 
 # --- Interpretación y selección del algoritmo ---
-
-# El análisis escrito de esta parte está en el notebook y en el informe.
 
 
 # ============================================================================
